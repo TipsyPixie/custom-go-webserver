@@ -1,0 +1,11 @@
+### IDE
+.vscode
+.idea
+
+### Temporary Files
+tmp
+logs
+*.log*
+*.swp
+*.tmp
+.DS_Store
