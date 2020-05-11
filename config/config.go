@@ -9,9 +9,8 @@ import (
 type Config struct {
 	Env         string
 	Application struct {
-		Secret       string
-		MigrationDir string `yaml:"migrationDir"`
-		Debug        bool
+		Secret string
+		Debug  bool
 	}
 	Database struct {
 		Driver             string
@@ -25,9 +24,12 @@ type Config struct {
 		ConnectionLifetime int               `yaml:"connectionLifeTime"`
 		EngineOptions      map[string]string `yaml:"engineOptions,omitempty"`
 	}
+	Migration struct {
+		RevisionUrl string `yaml:"revisionUrl"`
+	}
 }
 
-func Get(directory string, env string) (*Config, error) {
+func Load(directory string, env string) (*Config, error) {
 	configFileContent, err := ioutil.ReadFile(path.Join(directory, env))
 	if err != nil {
 		return nil, err

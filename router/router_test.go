@@ -16,7 +16,8 @@ import (
 func TestNewFactory(t *testing.T) {
 	rootContext := context.Background()
 
-	contextWithoutConfig, _ := context.WithCancel(rootContext)
+	contextWithoutConfig, cancel := context.WithCancel(rootContext)
+	defer cancel()
 	_, err := NewFactory(&contextWithoutConfig)
 	if err == nil {
 		t.Error("context without config succeeded")
@@ -31,9 +32,8 @@ func TestNewFactory(t *testing.T) {
 	testAppConfig := config.Config{
 		Env: "test",
 		Application: struct {
-			Secret       string
-			MigrationDir string `yaml:"migrationDir"`
-			Debug        bool
+			Secret string
+			Debug  bool
 		}{
 			Secret: "superDuperSecret",
 			Debug:  true,
@@ -52,9 +52,8 @@ func TestHandler_ServeHTTP(t *testing.T) {
 	testAppConfig := config.Config{
 		Env: "test",
 		Application: struct {
-			Secret       string
-			MigrationDir string `yaml:"migrationDir"`
-			Debug        bool
+			Secret string
+			Debug  bool
 		}{
 			Secret: "superDuperSecret",
 			Debug:  true,
@@ -81,7 +80,7 @@ func TestHandler_ServeHTTP(t *testing.T) {
 			}
 			return nil
 		} else {
-			return httpError.BadRequest(errors.New(stringBody), requestBody)
+			return httpError.BadRequest(errors.New(stringBody), nil)
 		}
 	})
 
@@ -101,8 +100,7 @@ func TestHandler_ServeHTTP(t *testing.T) {
 		t.Error(fmt.Sprintf("routing handler returns wrong value %s", secretReturned))
 	}
 
-	expectedErrorMessage := "makeError"
-	mockRequest = httptest.NewRequest("GET", "http://test", bytes.NewBufferString(expectedErrorMessage))
+	mockRequest = httptest.NewRequest("GET", "http://test", bytes.NewBufferString("makeError"))
 	responseRecorder = httptest.NewRecorder()
 	routeHandler.ServeHTTP(responseRecorder, mockRequest)
 	response = responseRecorder.Result()
@@ -114,7 +112,7 @@ func TestHandler_ServeHTTP(t *testing.T) {
 	if response.StatusCode != http.StatusBadRequest {
 		t.Error(fmt.Sprintf("routing handler returns http error code %d", response.StatusCode))
 	}
-	if errorMessage := string(responseBody); errorMessage != expectedErrorMessage {
+	if errorMessage := string(responseBody); errorMessage != "" {
 		t.Error(fmt.Sprintf("routing handler returns wrong value %s", errorMessage))
 	}
 }

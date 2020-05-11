@@ -1,35 +1,36 @@
 package database
 
 import (
-	"io/ioutil"
-	"os"
+	"custom-go-webserver/config"
 	"testing"
 )
 
 func TestOpen(t *testing.T) {
-	dbDir, err := ioutil.TempDir("", "custom-go-webserver-database")
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-	defer os.RemoveAll(dbDir)
-
-	dbFile, err := ioutil.TempFile(dbDir, "tmp")
-	if err != nil {
-		t.Error(err)
-		t.FailNow()
-	}
-
-	testConfig := Config{
-		Driver:             "sqlite3",
-		Hostname:           dbFile.Name(),
-		MaxOpenConnections: 10,
-		MaxIdleConnections: 20,
-		ConnectionLifetime: 30,
-		EngineOptions: map[string]string{
-			"sslmode": "disable",
+	testConfig := config.Config{
+		Env: "test",
+		Database: struct {
+			Driver             string
+			Username           string
+			Password           string
+			Hostname           string
+			Port               string
+			DatabaseName       string            `yaml:"databaseName"`
+			MaxOpenConnections int               `yaml:"maxOpenConnections"`
+			MaxIdleConnections int               `yaml:"maxIdleConnections"`
+			ConnectionLifetime int               `yaml:"connectionLifeTime"`
+			EngineOptions      map[string]string `yaml:"engineOptions,omitempty"`
+		}{
+			Driver:             "sqlite3",
+			Hostname:           "file::memory:?cache=shared",
+			MaxOpenConnections: 10,
+			MaxIdleConnections: 20,
+			ConnectionLifetime: 30,
+			EngineOptions: map[string]string{
+				"sslmode": "disable",
+			},
 		},
 	}
+
 	db, err := Open(testConfig)
 	if err != nil {
 		t.Error(err)

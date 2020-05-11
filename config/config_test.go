@@ -18,7 +18,6 @@ func TestGet(t *testing.T) {
 	configFileContent := []byte(`
 application:
   secret: secretValue
-  migrationDir: Morikawa Yuki
 database:
   engineOptions:
     option1: value1
@@ -33,7 +32,7 @@ database:
 		t.FailNow()
 	}
 
-	config, err := Get(configDir, filepath.Base(configFile.Name()))
+	config, err := Load(configDir, filepath.Base(configFile.Name()))
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -41,9 +40,6 @@ database:
 
 	if env := config.Env; env != filepath.Base(configFile.Name()) {
 		t.Error(env + "!=" + filepath.Base(configFile.Name()))
-	}
-	if migrationDir := config.Application.MigrationDir; migrationDir != "Morikawa Yuki" {
-		t.Error(migrationDir + "!=" + "Morikawa Yuki")
 	}
 	if option1 := config.Database.EngineOptions["option1"]; option1 != "value1" {
 		t.Error(option1 + "!+" + "value1")

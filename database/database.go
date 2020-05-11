@@ -52,5 +52,6 @@ func Open(connectionConfig config.Config) (*sql.DB, error) {
 		return nil, err
 	}
 	setConnectionPool(db, connectionConfig)
+	db.Driver()
 	return db, nil
 }
