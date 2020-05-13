@@ -13,12 +13,19 @@ type ContextKey string
 type HandleFunc func(responseWriter http.ResponseWriter, request *http.Request) *httpError.HttpError
 
 type Handler struct {
-	handle     HandleFunc
-	appContext *context.Context
+	handle        HandleFunc
+	appContext    *context.Context
+	preProcessors []HandleFunc
+}
+
+func (thisHandler *Handler) BeforeHandler(f HandleFunc) *Handler {
+	thisHandler.preProcessors = append(thisHandler.preProcessors, f)
+	return thisHandler
 }
 
 type HandlerFactory struct {
-	appContext *context.Context
+	appContext    *context.Context
+	preProcessors []HandleFunc
 }
 
 func NewFactory(appContext *context.Context) (*HandlerFactory, error) {
@@ -41,13 +48,29 @@ func (thisHandlerFactory *HandlerFactory) NewHandler(f HandleFunc) *Handler {
 	}
 }
 
+func (thisHandlerFactory *HandlerFactory) BeforeHandler(f HandleFunc) *HandlerFactory {
+	thisHandlerFactory.preProcessors = append(thisHandlerFactory.preProcessors, f)
+	return thisHandlerFactory
+}
+
 func (thisHandler *Handler) ServeHTTP(responseWriter http.ResponseWriter, request *http.Request) {
 	requestContext, cancelRequestContext := context.WithCancel(*thisHandler.appContext)
 	defer cancelRequestContext()
-	requestWithContext := request.Clone(requestContext)
-	httpErr := thisHandler.handle(responseWriter, requestWithContext)
+	*request = *(request.Clone(requestContext))
+
+	for _, preProcessor := range thisHandler.preProcessors {
+		httpErr := preProcessor(responseWriter, request)
+		if httpErr != nil {
+			responseWriter.WriteHeader(httpErr.StatusCode)
+			_, _ = responseWriter.Write(httpErr.Description)
+			return
+		}
+	}
+
+	httpErr := thisHandler.handle(responseWriter, request)
 	if httpErr != nil {
 		responseWriter.WriteHeader(httpErr.StatusCode)
 		_, _ = responseWriter.Write(httpErr.Description)
+		return
 	}
 }
