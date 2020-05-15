@@ -1,4 +1,4 @@
-module custom-go-webserver
+module github.com/TipsyPixie/custom-go-webserver/v1
 
 go 1.14
 
