@@ -2,8 +2,8 @@ package database
 
 import (
 	"bytes"
-	"custom-go-webserver/config"
 	"database/sql"
+	"github.com/TipsyPixie/custom-go-webserver/config"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 	"strings"

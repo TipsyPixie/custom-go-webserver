@@ -1,4 +1,4 @@
-module github.com/TipsyPixie/custom-go-webserver/v1
+module github.com/TipsyPixie/custom-go-webserver
 
 go 1.14
 
@@ -8,3 +8,4 @@ require (
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	gopkg.in/yaml.v3 v3.0.0-20200506231410-2ff61e1afc86
 )
+

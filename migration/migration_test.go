@@ -1,8 +1,8 @@
 package migration
 
 import (
-	"custom-go-webserver/config"
-	"custom-go-webserver/database"
+	"github.com/TipsyPixie/custom-go-webserver/config"
+	"github.com/TipsyPixie/custom-go-webserver/database"
 	"io/ioutil"
 	"os"
 	"path/filepath"

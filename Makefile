@@ -10,10 +10,10 @@ FORCE:
 test: FORCE
 	! $(FOR_EACH_MODULE) go test $(TEST_OPTS) ./{} | grep -q 'FAIL'
 
-analyze: FORCE
+vet: FORCE
 	$(FOR_EACH_MODULE) go vet $(VET_OPTS) ./{}
 
-format: FORCE
+lint: FORCE
 	$(FOR_EACH_MODULE) gofmt $(FMT_OPTS) ./{}
 
 fix: FORCE

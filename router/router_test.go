@@ -3,10 +3,10 @@ package router
 import (
 	"bytes"
 	"context"
-	"custom-go-webserver/config"
-	"custom-go-webserver/httpError"
 	"errors"
 	"fmt"
+	"github.com/TipsyPixie/custom-go-webserver/config"
+	"github.com/TipsyPixie/custom-go-webserver/httpError"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"

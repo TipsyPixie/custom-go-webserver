@@ -1,7 +1,7 @@
 package database
 
 import (
-	"custom-go-webserver/config"
+	"github.com/TipsyPixie/custom-go-webserver/config"
 	"testing"
 )
 

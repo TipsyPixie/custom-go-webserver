@@ -2,9 +2,9 @@ package router
 
 import (
 	"context"
-	"custom-go-webserver/config"
-	"custom-go-webserver/httpError"
 	"errors"
+	"github.com/TipsyPixie/custom-go-webserver/config"
+	"github.com/TipsyPixie/custom-go-webserver/httpError"
 	"net/http"
 )
 
